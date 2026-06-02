@@ -1,9 +1,3 @@
-[build]
-builder = "NIXPACKS"
-
-[nixpacks]
-phases.build.cmds = ["npm install --production"]
-
 [deploy]
 startCommand = "node server.js"
 healthcheckPath = "/"
