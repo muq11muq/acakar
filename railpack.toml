@@ -1,5 +1,0 @@
-[build]
-providers = ["python"]
-
-[start]
-cmd = "python -m http.server $PORT"
