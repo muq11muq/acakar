@@ -1,0 +1,2 @@
+[build]
+start = "gunicorn realestate_project.wsgi:application"

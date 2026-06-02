@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة تحكم الدلال - دلال</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="logo">🏠 دلال</a>
+      <ul class="nav-links">
+        <li><a href="index.html">الرئيسية</a></li>
+        <li><a href="index.html#properties">العقارات</a></li>
+        <li><a href="contact.html">التواصل</a></li>
+        <li><a href="dashboard.html">لوحة التحكم</a></li>
+        <li><a href="#" onclick="logout()">تسجيل الخروج</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container dashboard-container">
+    <h1>🧑‍💼 لوحة تحكم الدلال</h1>
+
+    <!-- Add Property Section -->
+    <section class="card">
+      <h2>➕ نشر عقار جديد</h2>
+      <form id="addPropertyForm" onsubmit="handleAddProperty(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label>نوع العقار</label>
+            <select id="prop-type" required>
+              <option value="land">قطعة أرض</option>
+              <option value="house">بيت</option>
+              <option value="building">بناية</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>الحالة</label>
+            <select id="prop-status" required>
+              <option value="ready">جاهز</option>
+              <option value="under-construction">قيد الإنشاء</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>الموقع</label>
+            <input type="text" id="prop-location" required>
+          </div>
+          <div class="form-group">
+            <label>المساحة (متر مربع)</label>
+            <input type="number" id="prop-area" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>السعر (د.ع)</label>
+            <input type="number" id="prop-price" required>
+          </div>
+          <div class="form-group">
+            <label>رقم التواصل</label>
+            <input type="text" id="prop-phone" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>وصف العقار</label>
+          <textarea id="prop-desc" rows="3" required></textarea>
+        </div>
+        <div class="form-group">
+          <label>رابط صورة (يمكن إضافة أكثر من واحدة مفصولة بفاصلة)</label>
+          <input type="text" id="prop-images" placeholder="https://example.com/img1.jpg, https://example.com/img2.jpg">
+        </div>
+        <button type="submit" class="btn btn-primary">نشر العقار</button>
+      </form>
+    </section>
+
+    <!-- Manage Properties Section -->
+    <section class="card">
+      <h2>📋 إدارة العقارات</h2>
+      <div id="dashboard-properties" class="dashboard-list"></div>
+    </section>
+
+    <!-- Messages Section -->
+    <section class="card">
+      <h2>💬 رسائل التواصل</h2>
+      <div id="messages-list" class="dashboard-list"></div>
+    </section>
+  </div>
+
+  <!-- Edit Property Modal -->
+  <div id="editModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('editModal')">&times;</span>
+      <h2>✏️ تعديل عقار</h2>
+      <form id="editPropertyForm" onsubmit="handleEditProperty(event)">
+        <input type="hidden" id="edit-id">
+        <div class="form-row">
+          <div class="form-group">
+            <label>نوع العقار</label>
+            <select id="edit-type" required>
+              <option value="land">قطعة أرض</option>
+              <option value="house">بيت</option>
+              <option value="building">بناية</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>الحالة</label>
+            <select id="edit-status" required>
+              <option value="ready">جاهز</option>
+              <option value="under-construction">قيد الإنشاء</option>
+              <option value="sold">مباع</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>الموقع</label>
+            <input type="text" id="edit-location" required>
+          </div>
+          <div class="form-group">
+            <label>المساحة (متر مربع)</label>
+            <input type="number" id="edit-area" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>السعر (د.ع)</label>
+            <input type="number" id="edit-price" required>
+          </div>
+          <div class="form-group">
+            <label>رقم التواصل</label>
+            <input type="text" id="edit-phone" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>وصف العقار</label>
+          <textarea id="edit-desc" rows="3" required></textarea>
+        </div>
+        <div class="form-group">
+          <label>رابط صورة</label>
+          <input type="text" id="edit-images">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">حفظ التعديلات</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notifications -->
+  <div id="toast-container"></div>
+
+  <footer class="footer">
+    <div class="container">
+      <p>دلال - جميع الحقوق محفوظة</p>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      initApp();
+      checkBrokerAuth();
+      renderDashboardProperties();
+      renderMessages();
+    });
+  </script>
+</body>
+</html>

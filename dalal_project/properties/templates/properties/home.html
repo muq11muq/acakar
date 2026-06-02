@@ -1,0 +1,212 @@
+{% extends 'properties/base.html' %}
+{% load static %}
+
+{% block title %}عقارات للبيع والإيجار في العراق{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="container hero-content">
+    <h1>{{ site_settings.site_name|default:'دلال' }} — عقارك في دقائق</h1>
+    <p>{{ site_settings.tagline|default:'بحث ذكي · صور حقيقية · تواصل مباشر مع الدلال' }}</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><strong>{{ page_obj.paginator.count|default:0 }}</strong><span>عقار متاح</span></div>
+      <div class="hero-stat"><strong>18</strong><span>محافظة</span></div>
+      <div class="hero-stat"><strong>24/7</strong><span>دعم</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="hero-quick-search">
+  <form class="quick-search-box container" method="get" action="{% url 'home' %}#properties">
+    <div class="form-group">
+      <label>المحافظة</label>
+      <select name="province" class="form-control">
+        <option value="">كل العراق</option>
+        {% for code, name in governorates %}
+        <option value="{{ code }}" {% if request.GET.province == code %}selected{% endif %}>{{ name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group">
+      <label>نوع العقار</label>
+      <select name="type" class="form-control">
+        <option value="">كل الأنواع</option>
+        <option value="apartment" {% if request.GET.type == 'apartment' %}selected{% endif %}>شقة</option>
+        <option value="house" {% if request.GET.type == 'house' %}selected{% endif %}>بيت</option>
+        <option value="land" {% if request.GET.type == 'land' %}selected{% endif %}>أرض</option>
+        <option value="building" {% if request.GET.type == 'building' %}selected{% endif %}>بناية</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary btn-lg">🔍 بحث</button>
+  </form>
+</div>
+
+<section class="features-strip">
+  <div class="container">
+    <div class="features-grid">
+      <div class="feature-card">
+        <span class="icon">🔍</span>
+        <h3>بحث متقدم</h3>
+        <p>فلترة حسب المحافظة والسعر والمساحة والغرف</p>
+      </div>
+      <div class="feature-card">
+        <span class="icon">📸</span>
+        <h3>صور حقيقية</h3>
+        <p>معرض صور لكل عقار مع عرض تفصيلي</p>
+      </div>
+      <div class="feature-card">
+        <span class="icon">📍</span>
+        <h3>موقع على الخريطة</h3>
+        <p>شاهد موقع العقار على الخريطة مباشرة</p>
+      </div>
+      <div class="feature-card">
+        <span class="icon">💬</span>
+        <h3>تواصل فوري</h3>
+        <p>اتصال وواتساب مع الدلال بضغطة واحدة</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container">
+  <div class="filter-chips">
+    <a href="{% url 'home' %}" class="chip {% if not request.GET.type and not request.GET.featured %}active{% endif %}">الكل</a>
+    <a href="?type=apartment#properties" class="chip {% if request.GET.type == 'apartment' %}active{% endif %}">شقق</a>
+    <a href="?type=house#properties" class="chip {% if request.GET.type == 'house' %}active{% endif %}">بيوت</a>
+    <a href="?type=land#properties" class="chip {% if request.GET.type == 'land' %}active{% endif %}">أراضي</a>
+    <a href="?status=rent#properties" class="chip {% if request.GET.status == 'rent' %}active{% endif %}">إيجار</a>
+    <a href="?featured=1#properties" class="chip {% if request.GET.featured %}active{% endif %}">⭐ مميز</a>
+  </div>
+
+  <div class="search-panel collapsed" id="search">
+    <button type="button" class="btn btn-outline search-toggle-btn" id="search-toggle">🔍 البحث المتقدم</button>
+    <h2>فلترة دقيقة</h2>
+    <form method="get" action="{% url 'home' %}#properties">
+      <div class="search-grid">
+        <div class="form-group"><label>بحث</label>{{ form.q }}</div>
+        <div class="form-group"><label>المحافظة</label>{{ form.province }}</div>
+        <div class="form-group"><label>المدينة</label>{{ form.city }}<datalist id="city-list"></datalist></div>
+        <div class="form-group"><label>المنطقة</label>{{ form.district }}</div>
+        <div class="form-group"><label>النوع</label>{{ form.type }}</div>
+        <div class="form-group"><label>الحالة</label>{{ form.status }}</div>
+        <div class="form-group"><label>سعر من</label>{{ form.price_min }}</div>
+        <div class="form-group"><label>سعر إلى</label>{{ form.price_max }}</div>
+        <div class="form-group"><label>مساحة من</label>{{ form.area_min }}</div>
+        <div class="form-group"><label>مساحة إلى</label>{{ form.area_max }}</div>
+        <div class="form-group"><label>غرف</label>{{ form.bedrooms }}</div>
+        <div class="form-group"><label>ترتيب</label>{{ form.sort }}</div>
+      </div>
+      <div class="search-actions">
+        <button type="submit" class="btn btn-primary">تطبيق الفلتر</button>
+        <a href="{% url 'home' %}" class="btn btn-outline">إعادة تعيين</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<section class="section" id="favorites-section" style="display:none">
+  <div class="container">
+    <div class="section-header"><h2 class="section-title">❤️ مفضلاتك</h2></div>
+    <div class="properties-grid" id="favorites-grid"></div>
+  </div>
+</section>
+
+<section class="section" id="recent-section" style="display:none">
+  <div class="container">
+    <div class="section-header"><h2 class="section-title">🕐 شاهدت مؤخراً</h2></div>
+    <div class="properties-grid" id="recent-grid"></div>
+  </div>
+</section>
+
+{% if featured_properties %}
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">⭐ عقارات مميزة</h2>
+        <p class="section-subtitle">مختارة بعناية</p>
+      </div>
+    </div>
+    <div class="properties-grid" id="properties-grid-featured">
+      {% for property in featured_properties %}
+        {% include 'properties/_property_card.html' %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% if promoted_properties %}
+<section class="section" style="padding-top:0">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">📢 إعلانات خاصة</h2>
+    </div>
+    <div class="properties-grid">
+      {% for property in promoted_properties %}
+        {% include 'properties/_property_card.html' %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<section class="section" id="properties">
+  <div class="container">
+    <div class="view-toolbar">
+      <div>
+        <h2 class="section-title">جميع العقارات</h2>
+        <p class="section-subtitle">{{ page_obj.paginator.count }} نتيجة</p>
+      </div>
+      <div class="view-toggle" role="group" aria-label="طريقة العرض">
+        <button type="button" class="active" data-view="grid" aria-label="شبكة">▦</button>
+        <button type="button" data-view="list" aria-label="قائمة">☰</button>
+      </div>
+    </div>
+
+    {% if properties %}
+    <div class="properties-grid" id="properties-grid">
+      {% for property in properties %}
+        {% include 'properties/_property_card.html' %}
+      {% endfor %}
+    </div>
+
+    {% if page_obj.has_other_pages %}
+    <nav class="pagination" aria-label="صفحات">
+      {% if page_obj.has_previous %}
+        <a href="?{% if query_string %}{{ query_string }}&{% endif %}page={{ page_obj.previous_page_number }}">‹</a>
+      {% endif %}
+      {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+          <span class="current">{{ num }}</span>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+          <a href="?{% if query_string %}{{ query_string }}&{% endif %}page={{ num }}">{{ num }}</a>
+        {% endif %}
+      {% endfor %}
+      {% if page_obj.has_next %}
+        <a href="?{% if query_string %}{{ query_string }}&{% endif %}page={{ page_obj.next_page_number }}">›</a>
+      {% endif %}
+    </nav>
+    {% endif %}
+    {% else %}
+    <div class="empty-state">
+      <div class="icon">🏠</div>
+      <h3>لا توجد نتائج</h3>
+      <p>جرّب تغيير معايير البحث</p>
+      <a href="{% url 'home' %}" class="btn btn-primary" style="margin-top:1rem">عرض الكل</a>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- نافذة المقارنة -->
+<div id="compare-modal" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.5);padding:1rem;overflow:auto">
+  <div style="max-width:600px;margin:2rem auto;background:var(--bg-card);border-radius:20px;padding:1.5rem">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+      <h2 style="font-weight:900">مقارنة العقارات</h2>
+      <button type="button" class="btn btn-ghost btn-sm" id="compare-close">✕</button>
+    </div>
+    <div id="compare-content"></div>
+  </div>
+</div>
+{% endblock %}

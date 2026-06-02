@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>دلال - موقع إدارة العقارات</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="logo">🏠 دلال</a>
+      <ul class="nav-links">
+        <li><a href="index.html">الرئيسية</a></li>
+        <li><a href="index.html#properties">العقارات</a></li>
+        <li><a href="contact.html">التواصل</a></li>
+        <li id="dashboard-link" style="display:none"><a href="dashboard.html">لوحة التحكم</a></li>
+        <li id="login-nav"><a href="#login" onclick="openModal('loginModal')">تسجيل الدخول</a></li>
+        <li id="logout-nav" style="display:none"><a href="#" onclick="logout()">تسجيل الخروج</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="hero">
+    <div class="container">
+      <h1>أهلاً بك في دلال</h1>
+      <p>منصة العقارات الموثوقة - أراضي، بيوت، بنايات</p>
+      <a href="#properties" class="btn btn-primary">استعرض العقارات</a>
+    </div>
+  </header>
+
+  <!-- Filters -->
+  <section class="filters-section" id="properties">
+    <div class="container">
+      <h2>🔍 فلترة العقارات</h2>
+      <div class="filters">
+        <select id="filter-type">
+          <option value="">كل الأنواع</option>
+          <option value="land">قطعة أرض</option>
+          <option value="house">بيت</option>
+          <option value="building">بناية</option>
+        </select>
+        <select id="filter-status">
+          <option value="">كل الحالات</option>
+          <option value="ready">جاهز</option>
+          <option value="under-construction">قيد الإنشاء</option>
+        </select>
+        <input type="number" id="filter-price-min" placeholder="السعر الأدنى">
+        <input type="number" id="filter-price-max" placeholder="السعر الأعلى">
+        <input type="text" id="filter-location" placeholder="الموقع">
+        <button class="btn btn-primary" onclick="applyFilters()">تطبيق</button>
+        <button class="btn btn-secondary" onclick="resetFilters()">إعادة</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Properties Grid -->
+  <section class="properties-section">
+    <div class="container">
+      <h2>🏠 العقارات المتوفرة</h2>
+      <div id="properties-grid" class="properties-grid"></div>
+      <div id="no-results" class="no-results" style="display:none">
+        <p>لا توجد عقارات مطابقة للفلترة</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Login Modal -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('loginModal')">&times;</span>
+      <h2>👤 تسجيل الدخول</h2>
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label>اسم المستخدم</label>
+          <input type="text" id="username" required>
+        </div>
+        <div class="form-group">
+          <label>كلمة المرور</label>
+          <input type="password" id="password" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">دخول</button>
+        <p class="hint">الدلال: admin / admin</p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Contact Broker Modal -->
+  <div id="contactModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('contactModal')">&times;</span>
+      <h2>💬 تواصل مع الدلال</h2>
+      <form id="contactForm" onsubmit="handleContact(event)">
+        <div class="form-group">
+          <label>اسمك</label>
+          <input type="text" id="contact-name" required>
+        </div>
+        <div class="form-group">
+          <label>رسالتك</label>
+          <textarea id="contact-message" rows="4" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">إرسال</button>
+        <div id="broker-phone" class="broker-phone"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notifications -->
+  <div id="toast-container"></div>
+
+  <footer class="footer">
+    <div class="container">
+      <p>دلال - جميع الحقوق محفوظة</p>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      initApp();
+      renderProperties(getFilteredProperties());
+    });
+  </script>
+</body>
+</html>
