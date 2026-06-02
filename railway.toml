@@ -4,4 +4,4 @@ builder = "NIXPACKS"
 [deploy]
 startCommand = "gunicorn dalal_project.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120"
 healthcheckPath = "/health/"
-healthcheckTimeout = 100
+healthcheckTimeout = 300
