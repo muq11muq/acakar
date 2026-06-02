@@ -1,5 +1,5 @@
 [build]
-providers = ["nodejs"]
+providers = ["python"]
 
 [start]
-cmd = "node server.js"
+cmd = "python -m http.server 8000"
