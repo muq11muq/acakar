@@ -1,0 +1,12 @@
+{
+  "name": "acakar",
+  "version": "1.0.0",
+  "description": "Real estate platform",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
