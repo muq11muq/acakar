@@ -11,6 +11,20 @@ def main():
     if project_root not in sys.path:
         sys.path.insert(0, project_root)
 
+    # Debugging: print environment info to build logs if import fails
+    try:
+        print("[manage.py] PROJECT_ROOT:", project_root)
+        print("[manage.py] CWD:", os.getcwd())
+        print("[manage.py] ROOT_LISTING:", sorted(os.listdir(project_root)))
+        import importlib
+        try:
+            importlib.import_module('dalal_project')
+            print("[manage.py] dalal_project import: OK")
+        except Exception as _e:
+            print("[manage.py] dalal_project import error:", repr(_e))
+    except Exception:
+        pass
+
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dalal_project.settings')
     try:
         from django.core.management import execute_from_command_line
