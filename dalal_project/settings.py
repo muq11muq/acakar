@@ -81,10 +81,47 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'dalal_project.wsgi.application'
 
-# --- Database: SQLite or PostgreSQL ---
+# --- Database: SQLite, PostgreSQL, or MySQL ---
 DB_ENGINE = os.getenv('DB_ENGINE', 'sqlite').lower()
 
-if DB_ENGINE == 'postgresql' or os.getenv('DATABASE_URL'):
+if DB_ENGINE == 'mysql' or (os.getenv('DATABASE_URL') and 'mysql' in os.getenv('DATABASE_URL', '').lower()):
+    if os.getenv('DATABASE_URL'):
+        try:
+            import dj_database_url
+            DATABASES = {
+                'default': dj_database_url.config(
+                    default=os.getenv('DATABASE_URL'),
+                    conn_max_age=600,
+                    conn_health_checks=True,
+                    engine='django.db.backends.mysql',
+                )
+            }
+        except ImportError:
+            # Fallback to manual parsing if dj_database_url not available
+            DATABASES = {
+                'default': {
+                    'ENGINE': 'django.db.backends.mysql',
+                    'NAME': os.getenv('DB_NAME', 'railway'),
+                    'USER': os.getenv('DB_USER', 'root'),
+                    'PASSWORD': os.getenv('DB_PASSWORD', ''),
+                    'HOST': os.getenv('DB_HOST', 'localhost'),
+                    'PORT': os.getenv('DB_PORT', '3306'),
+                    'OPTIONS': {'charset': 'utf8mb4'},
+                }
+            }
+    else:
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.mysql',
+                'NAME': os.getenv('DB_NAME', 'railway'),
+                'USER': os.getenv('DB_USER', 'root'),
+                'PASSWORD': os.getenv('DB_PASSWORD', ''),
+                'HOST': os.getenv('DB_HOST', 'localhost'),
+                'PORT': os.getenv('DB_PORT', '3306'),
+                'OPTIONS': {'charset': 'utf8mb4'},
+            }
+        }
+elif DB_ENGINE == 'postgresql':
     try:
         import dj_database_url
         DATABASES = {
@@ -105,18 +142,6 @@ if DB_ENGINE == 'postgresql' or os.getenv('DATABASE_URL'):
                 'PORT': os.getenv('DB_PORT', '5432'),
             }
         }
-elif DB_ENGINE == 'mysql':
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': os.getenv('DB_NAME', 'dalal_db'),
-            'USER': os.getenv('DB_USER', 'root'),
-            'PASSWORD': os.getenv('DB_PASSWORD', ''),
-            'HOST': os.getenv('DB_HOST', 'localhost'),
-            'PORT': os.getenv('DB_PORT', '3306'),
-            'OPTIONS': {'charset': 'utf8mb4'},
-        }
-    }
 else:
     DATABASES = {
         'default': {
