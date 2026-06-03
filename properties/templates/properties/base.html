@@ -121,10 +121,9 @@
     <button type="button" class="btn btn-sm btn-ghost" id="compare-clear" style="color:#fff;border-color:rgba(255,255,255,0.4)">مسح</button>
   </div>
 
-  <script>window.GOVERNORATE_CITIES = {{ governorate_cities_json|safe }};</script>
+  <script>window.GOVERNORATE_CITIES = {{ governorate_cities_json|safe }}</script>
   <script>window.SITE_PHONE = "{{ site_settings.broker_phone }}";</script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-  <script src="{% static 'js/data.js' %}"></script>
   <script src="{% static 'js/app.js' %}"></script>
   {% block extra_js %}{% endblock %}
 </body>
