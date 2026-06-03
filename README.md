@@ -96,10 +96,10 @@ http://localhost:8000
 DB_ENGINE=sqlite
 ```
 
-2. **PostgreSQL** (للإنتاج على Railway):
+2. **MySQL** (للإنتاج على Railway):
 ```env
-DB_ENGINE=postgresql
-DATABASE_URL=postgres://user:password@host:5432/dbname
+DB_ENGINE=mysql
+DATABASE_URL=mysql://user:password@host:3306/dbname
 ```
 
 3. **MySQL** (اختياري):
@@ -127,7 +127,7 @@ SECRET_KEY=your-secret-key
 DEBUG=False
 ALLOWED_HOSTS=your-domain.railway.app
 CSRF_TRUSTED_ORIGINS=https://your-domain.railway.app
-DB_ENGINE=postgresql
+DB_ENGINE=mysql
 ```
 
 3. **النشر التلقائي:**
@@ -153,7 +153,7 @@ DB_ENGINE=postgresql
 
 - **Django 6.0+**: إطار العمل الرئيسي
 - **Python 3.13**: لغة البرمجة
-- **PostgreSQL**: قاعدة البيانات (الإنتاج)
+- **MySQL**: قاعدة البيانات (الإنتاج على Railway)
 - **SQLite**: قاعدة البيانات (التنمية)
 - **WhiteNoise**: تقديم الملفات الثابتة
 - **Gunicorn**: خادم WSGI
