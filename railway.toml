@@ -5,7 +5,7 @@ healthcheckPath = "/"
 healthcheckTimeout = 30
 
 [env]
-MISE_PYTHON_GITHUB_ATTESTATIONS = "false"
+MISE_PYTHON_GITHUB_ATTESTATIONS = false
 DEBUG = "False"
 ALLOWED_HOSTS = "*"
 CSRF_TRUSTED_ORIGINS = "https://*"
