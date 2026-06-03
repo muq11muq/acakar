@@ -11,11 +11,12 @@ def main():
     if project_root not in sys.path:
         sys.path.insert(0, project_root)
 
-    # Debugging: print environment info to build logs if import fails
+    # Debugging: print environment info to build logs if import fails (use stderr & flush)
     try:
-        print("[manage.py] PROJECT_ROOT:", project_root)
-        print("[manage.py] CWD:", os.getcwd())
-        print("[manage.py] ROOT_LISTING:", sorted(os.listdir(project_root)))
+        sys.stderr.write(f"[manage.py] PROJECT_ROOT: {project_root}\n")
+        sys.stderr.write(f"[manage.py] CWD: {os.getcwd()}\n")
+        sys.stderr.write(f"[manage.py] ROOT_LISTING: {sorted(os.listdir(project_root))}\n")
+        sys.stderr.flush()
 
         # If dalal_project is not directly importable, search upward for it
         if not os.path.isdir(os.path.join(project_root, 'dalal_project')):
@@ -32,16 +33,23 @@ def main():
             if found:
                 if found not in sys.path:
                     sys.path.insert(0, found)
-                print(f"[manage.py] Found dalal_project in parent: {found}")
+                sys.stderr.write(f"[manage.py] Found dalal_project in parent: {found}\n")
+                sys.stderr.flush()
 
         import importlib
         try:
             importlib.import_module('dalal_project')
-            print("[manage.py] dalal_project import: OK")
+            sys.stderr.write("[manage.py] dalal_project import: OK\n")
+            sys.stderr.flush()
         except Exception as _e:
-            print("[manage.py] dalal_project import error:", repr(_e))
-    except Exception:
-        pass
+            sys.stderr.write(f"[manage.py] dalal_project import error: {repr(_e)}\n")
+            sys.stderr.flush()
+    except Exception as _exc:
+        try:
+            sys.stderr.write(f"[manage.py] debug print failed: {repr(_exc)}\n")
+            sys.stderr.flush()
+        except Exception:
+            pass
 
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dalal_project.settings')
     try:
