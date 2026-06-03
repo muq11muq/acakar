@@ -4,5 +4,5 @@ startCommand = "PYTHONPATH=/app gunicorn dalal_project.wsgi:application --bind 0
 healthcheckPath = "/health/"
 healthcheckTimeout = 30
 
-[build.env]
+[env]
 MISE_PYTHON_GITHUB_ATTESTATIONS = "false"
