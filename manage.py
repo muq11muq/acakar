@@ -16,6 +16,24 @@ def main():
         print("[manage.py] PROJECT_ROOT:", project_root)
         print("[manage.py] CWD:", os.getcwd())
         print("[manage.py] ROOT_LISTING:", sorted(os.listdir(project_root)))
+
+        # If dalal_project is not directly importable, search upward for it
+        if not os.path.isdir(os.path.join(project_root, 'dalal_project')):
+            cur = project_root
+            found = None
+            for _ in range(6):
+                parent = os.path.dirname(cur)
+                if parent == cur:
+                    break
+                if os.path.isdir(os.path.join(parent, 'dalal_project')):
+                    found = parent
+                    break
+                cur = parent
+            if found:
+                if found not in sys.path:
+                    sys.path.insert(0, found)
+                print(f"[manage.py] Found dalal_project in parent: {found}")
+
         import importlib
         try:
             importlib.import_module('dalal_project')
