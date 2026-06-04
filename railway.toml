@@ -4,9 +4,6 @@ startCommand = "PYTHONPATH=/app gunicorn dalal_project.wsgi:application --bind 0
 healthcheckPath = "/"
 healthcheckTimeout = 30
 
-[build]
-builder = "nixpacks"
-
 [env]
 DEBUG = "False"
 ALLOWED_HOSTS = "*"
