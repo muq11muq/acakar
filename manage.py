@@ -3,6 +3,12 @@
 import os
 import sys
 
+# CRITICAL: Remove CSRF_TRUSTED_ORIGINS from environment immediately
+# Railway may set this to an invalid value (e.g., ".") that causes Django 4.0+ to fail
+# This must happen before Django settings are loaded
+if 'CSRF_TRUSTED_ORIGINS' in os.environ:
+    del os.environ['CSRF_TRUSTED_ORIGINS']
+
 
 def main():
     """Run administrative tasks."""

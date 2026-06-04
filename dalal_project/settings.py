@@ -5,14 +5,16 @@ Supports SQLite (dev) and PostgreSQL (production) via environment variables.
 
 import os
 import sys
+
+# CRITICAL: Remove CSRF_TRUSTED_ORIGINS from environment IMMEDIATELY before any imports
+# Railway may set this to an invalid value (e.g., ".") that causes Django 4.0+ system check to fail
+# This must happen before any Django imports or load_dotenv()
+if 'CSRF_TRUSTED_ORIGINS' in os.environ:
+    del os.environ['CSRF_TRUSTED_ORIGINS']
+
 from pathlib import Path
 
 from dotenv import load_dotenv
-
-# Remove CSRF_TRUSTED_ORIGINS from environment if it exists to prevent Django system check errors
-# Railway may set this to an invalid value that causes Django 4.0+ to fail
-if 'CSRF_TRUSTED_ORIGINS' in os.environ:
-    del os.environ['CSRF_TRUSTED_ORIGINS']
 
 load_dotenv()
 
