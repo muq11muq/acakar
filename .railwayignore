@@ -6,3 +6,6 @@ server.js
 package.json.backup
 *.lnk
 *.backup
+mise.toml
+.python-version
+runtime.txt
