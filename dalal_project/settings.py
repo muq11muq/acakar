@@ -26,12 +26,15 @@ ALLOWED_HOSTS = [
     h.strip() for h in os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',') if h.strip()
 ]
 
+csrf_env = os.getenv('CSRF_TRUSTED_ORIGINS', 'http://localhost:8000,http://127.0.0.1:8000')
+# Filter out invalid origins that don't start with http:// or https://
 CSRF_TRUSTED_ORIGINS = [
-    o.strip() for o in os.getenv(
-        'CSRF_TRUSTED_ORIGINS',
-        'http://localhost:8000,http://127.0.0.1:8000',
-    ).split(',') if o.strip()
+    o.strip() for o in csrf_env.split(',') 
+    if o.strip() and (o.strip().startswith('http://') or o.strip().startswith('https://'))
 ]
+# If no valid origins found, use defaults
+if not CSRF_TRUSTED_ORIGINS:
+    CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://127.0.0.1:8000']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
