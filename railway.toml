@@ -7,7 +7,6 @@ healthcheckTimeout = 30
 [env]
 DEBUG = "False"
 ALLOWED_HOSTS = "*"
-CSRF_TRUSTED_ORIGINS = "https://acakar-production.up.railway.app"
 DB_ENGINE = "mysql"
 SECRET_KEY = ""
 DATABASE_URL = ""
