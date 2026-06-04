@@ -112,26 +112,43 @@ DB_HOST=localhost
 DB_PORT=3306
 ```
 
-## 🌐 النشر على Railway
+## 🌐 النشر على Railway عبر GitHub
 
 ### خطوات النشر:
 
-1. **ربط المستودع على Railway:**
-```
-railway up
-```
+1. **ربط المستودع على Railway عبر GitHub:**
+   - افتح موقع Railway: https://railway.app
+   - سجل الدخول باستخدام GitHub
+   - اضغط على "New Project"
+   - اختر "Deploy from GitHub repo"
+   - حدد مستودع `acakar`
 
-2. **إضافة متغيرات البيئة:**
-```
-SECRET_KEY=your-secret-key
-DEBUG=False
-ALLOWED_HOSTS=your-domain.railway.app
-CSRF_TRUSTED_ORIGINS=https://your-domain.railway.app
-DB_ENGINE=mysql
-```
+2. **إعدادات البناء التلقائية:**
+   - سيقوم Railway تلقائياً بكشف مشروع Django
+   - سيستخدم ملف `railway.toml` للتكوين
+   - سيتم بناء المشروع تلقائياً
 
-3. **النشر التلقائي:**
-سيقوم Railway ببناء ونشر المشروع تلقائياً عند كل دفع.
+3. **إضافة متغيرات البيئة في Railway:**
+   - اذهب إلى إعدادات المشروع في Railway
+   - أضف المتغيرات التالية:
+     ```
+     SECRET_KEY=your-secure-secret-key-here
+     DEBUG=False
+     ALLOWED_HOSTS=*
+     CSRF_TRUSTED_ORIGINS=https://*
+     DB_ENGINE=mysql
+     ```
+   - Railway سيقوم تلقائياً بإضافة `DATABASE_URL` عند إنشاء قاعدة بيانات MySQL
+
+4. **النشر التلقائي:**
+   - سيقوم Railway ببناء ونشر المشروع تلقائياً عند كل دفع إلى GitHub
+   - يمكنك مراقبة حالة النشر في لوحة تحكم Railway
+
+### ملفات النشر المهمة:
+- `railway.toml` - تكوين Railway الرئيسي
+- `Procfile` - أمر بدء التشغيل
+- `requirements.txt` - المكتبات المطلوبة
+- `runtime.txt` - إصدار Python (3.10)
 
 ## 📊 أنواع العقارات
 
