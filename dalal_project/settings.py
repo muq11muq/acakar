@@ -263,13 +263,17 @@ MESSAGE_TAGS = {
 SITE_NAME = os.getenv('SITE_NAME', 'دلال')
 
 # CORS Settings
-CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOW_ALL_ORIGINS = DEBUG  # Allow all in development, restrict in production
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
     "http://127.0.0.1:8000",
 ]
 if not DEBUG:
-    CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', '').split(',')
+    cors_origins = os.getenv('CORS_ALLOWED_ORIGINS', '')
+    if cors_origins:
+        CORS_ALLOWED_ORIGINS = [o.strip() for o in cors_origins.split(',') if o.strip()]
+    else:
+        CORS_ALLOW_ALL_ORIGINS = False
 
 # Security Headers for API
 SECURE_CONTENT_TYPE_NOSNIFF = True
