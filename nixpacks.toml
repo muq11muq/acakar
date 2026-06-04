@@ -1,0 +1,8 @@
+[phases.setup]
+nixPkgs = ["python310"]
+
+[phases.build]
+cmds = ["python manage.py collectstatic --noinput", "python manage.py migrate --noinput"]
+
+[start]
+cmd = "PYTHONPATH=/app gunicorn dalal_project.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120"
