@@ -1,6 +1,6 @@
 [deploy]
 buildCommand = "mkdir -p staticfiles && python manage.py collectstatic --noinput"
-startCommand = "python manage.py migrate --noinput && PYTHONPATH=. gunicorn dalal_project.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120"
+startCommand = "python manage.py migrate --noinput --skip-checks && PYTHONPATH=. gunicorn dalal_project.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120"
 healthcheckPath = "/"
 healthcheckTimeout = 30
 
