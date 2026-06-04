@@ -33,11 +33,33 @@ if DEBUG:
     CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://127.0.0.1:8000']
 else:
     # In production, construct from ALLOWED_HOSTS with proper schemes
+    # If ALLOWED_HOSTS contains "*", we can't determine specific origins
+    # In that case, use the Railway app URL from environment or a sensible default
+    railway_domain = os.getenv('RAILWAY_PUBLIC_DOMAIN', '')
+    railway_url = os.getenv('RAILWAY_URL', '')
+    
+    if railway_domain:
+        CSRF_TRUSTED_ORIGINS.append(f'https://{railway_domain}')
+        CSRF_TRUSTED_ORIGINS.append(f'http://{railway_domain}')
+    elif railway_url:
+        # Extract domain from RAILWAY_URL if available
+        from urllib.parse import urlparse
+        parsed = urlparse(railway_url)
+        if parsed.netloc:
+            CSRF_TRUSTED_ORIGINS.append(f'https://{parsed.netloc}')
+            CSRF_TRUSTED_ORIGINS.append(f'http://{parsed.netloc}')
+    
+    # Also add any specific hosts from ALLOWED_HOSTS (excluding wildcard)
     for host in ALLOWED_HOSTS:
         if host and host != '*':
             # Add both http and https versions
-            CSRF_TRUSTED_ORIGINS.append(f'https://{host}')
-            CSRF_TRUSTED_ORIGINS.append(f'http://{host}')
+            if not any(host in origin for origin in CSRF_TRUSTED_ORIGINS):
+                CSRF_TRUSTED_ORIGINS.append(f'https://{host}')
+                CSRF_TRUSTED_ORIGINS.append(f'http://{host}')
+    
+    # If still empty, use a safe default for Railway
+    if not CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS = ['https://*.railway.app']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
