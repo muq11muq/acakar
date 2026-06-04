@@ -1,0 +1,345 @@
+ERROR 2026-06-02 22:05:12,513 log Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\backends\utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\backends\sqlite3\base.py", line 328, in execute
+    return super().execute(query, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: properties_sitesettings
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\zbxhh\OneDrive\Desktop\acakar\properties\views.py", line 23, in home
+    return render(request, 'index.html')
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\template\backends\django.py", line 61, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 173, in render
+    with context.bind_template(self):
+         ~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Program Files\Python313\Lib\contextlib.py", line 141, in __enter__
+    return next(self.gen)
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\template\context.py", line 254, in bind_template
+    updates.update(processor(self.request))
+                   ~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\zbxhh\OneDrive\Desktop\acakar\properties\context_processors.py", line 8, in site_context
+    settings = SiteSettings.get_solo()
+  File "C:\Users\zbxhh\OneDrive\Desktop\acakar\properties\models.py", line 42, in get_solo
+    obj, _ = cls.objects.get_or_create(pk=1)
+             ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 916, in get_or_create
+    return self.get(**kwargs), False
+           ~~~~~~~~^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 633, in get
+    num = len(clone)
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 380, in __len__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 1881, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+    )
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\compiler.py", line 1562, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\backends\utils.py", line 102, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\backends\utils.py", line 67, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\backends\utils.py", line 80, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\backends\utils.py", line 84, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\backends\utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\backends\sqlite3\base.py", line 328, in execute
+    return super().execute(query, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: no such table: properties_sitesettings
+ERROR 2026-06-02 22:05:12,556 basehttp "GET / HTTP/1.1" 500 182669
+WARNING 2026-06-02 22:05:13,038 log Not Found: /favicon.ico
+WARNING 2026-06-02 22:05:13,040 basehttp "GET /favicon.ico HTTP/1.1" 404 5613
+ERROR 2026-06-02 22:06:32,190 log Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\backends\utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\backends\sqlite3\base.py", line 328, in execute
+    return super().execute(query, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: properties_property
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\zbxhh\OneDrive\Desktop\acakar\properties\views.py", line 43, in home
+    page_obj = paginator.get_page(request.GET.get('page'))
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\core\paginator.py", line 68, in get_page
+    return self.page(number)
+           ~~~~~~~~~^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\core\paginator.py", line 72, in page
+    number = self.validate_number(number)
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\core\paginator.py", line 53, in validate_number
+    if number > self.num_pages:
+                ^^^^^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\utils\functional.py", line 57, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\core\paginator.py", line 99, in num_pages
+    if self.count == 0 and not self.allow_empty_first_page:
+       ^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\utils\functional.py", line 57, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\core\paginator.py", line 93, in count
+    return c()
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 608, in count
+    return self.query.get_count(using=self.db)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\query.py", line 568, in get_count
+    return obj.get_aggregation(using, {"__count": Count("*")})["__count"]
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\query.py", line 554, in get_aggregation
+    result = compiler.execute_sql(SINGLE)
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\compiler.py", line 1562, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\backends\utils.py", line 102, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\backends\utils.py", line 67, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\backends\utils.py", line 80, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\backends\utils.py", line 84, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\backends\utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\backends\sqlite3\base.py", line 328, in execute
+    return super().execute(query, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: no such table: properties_property
+ERROR 2026-06-02 22:06:33,360 basehttp "GET / HTTP/1.1" 500 162017
+ERROR 2026-06-02 22:06:37,813 log Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\backends\utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\backends\sqlite3\base.py", line 328, in execute
+    return super().execute(query, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: properties_property
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\zbxhh\OneDrive\Desktop\acakar\properties\views.py", line 43, in home
+    page_obj = paginator.get_page(request.GET.get('page'))
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\core\paginator.py", line 68, in get_page
+    return self.page(number)
+           ~~~~~~~~~^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\core\paginator.py", line 72, in page
+    number = self.validate_number(number)
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\core\paginator.py", line 53, in validate_number
+    if number > self.num_pages:
+                ^^^^^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\utils\functional.py", line 57, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\core\paginator.py", line 99, in num_pages
+    if self.count == 0 and not self.allow_empty_first_page:
+       ^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\utils\functional.py", line 57, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\core\paginator.py", line 93, in count
+    return c()
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 608, in count
+    return self.query.get_count(using=self.db)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\query.py", line 568, in get_count
+    return obj.get_aggregation(using, {"__count": Count("*")})["__count"]
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\query.py", line 554, in get_aggregation
+    result = compiler.execute_sql(SINGLE)
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\compiler.py", line 1562, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\backends\utils.py", line 102, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\backends\utils.py", line 67, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\backends\utils.py", line 80, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\backends\utils.py", line 84, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\backends\utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\backends\sqlite3\base.py", line 328, in execute
+    return super().execute(query, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: no such table: properties_property
+ERROR 2026-06-02 22:06:37,834 basehttp "GET / HTTP/1.1" 500 162154
+ERROR 2026-06-02 22:06:39,179 log Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\backends\utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\backends\sqlite3\base.py", line 328, in execute
+    return super().execute(query, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: properties_property
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\zbxhh\OneDrive\Desktop\acakar\properties\views.py", line 43, in home
+    page_obj = paginator.get_page(request.GET.get('page'))
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\core\paginator.py", line 68, in get_page
+    return self.page(number)
+           ~~~~~~~~~^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\core\paginator.py", line 72, in page
+    number = self.validate_number(number)
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\core\paginator.py", line 53, in validate_number
+    if number > self.num_pages:
+                ^^^^^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\utils\functional.py", line 57, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\core\paginator.py", line 99, in num_pages
+    if self.count == 0 and not self.allow_empty_first_page:
+       ^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\utils\functional.py", line 57, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\core\paginator.py", line 93, in count
+    return c()
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 608, in count
+    return self.query.get_count(using=self.db)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\query.py", line 568, in get_count
+    return obj.get_aggregation(using, {"__count": Count("*")})["__count"]
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\query.py", line 554, in get_aggregation
+    result = compiler.execute_sql(SINGLE)
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\compiler.py", line 1562, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\backends\utils.py", line 102, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\backends\utils.py", line 67, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\backends\utils.py", line 80, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\backends\utils.py", line 84, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\backends\utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\zbxhh\AppData\Roaming\Python\Python313\site-packages\django\db\backends\sqlite3\base.py", line 328, in execute
+    return super().execute(query, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: no such table: properties_property
+ERROR 2026-06-02 22:06:39,217 basehttp "GET / HTTP/1.1" 500 162154
+WARNING 2026-06-02 22:08:34,552 basehttp "GET /static/css/dalal.css HTTP/1.1" 404 1899
+WARNING 2026-06-02 22:08:34,556 basehttp "GET /static/js/dalal.js HTTP/1.1" 404 1893
+ERROR 2026-06-02 22:10:42,217 basehttp "GET / HTTP/1.1" 500 247660
+ERROR 2026-06-02 22:11:41,000 basehttp "GET / HTTP/1.1" 500 247797
+ERROR 2026-06-02 22:11:42,317 basehttp "GET / HTTP/1.1" 500 247797
+ERROR 2026-06-02 22:11:49,421 basehttp "GET / HTTP/1.1" 500 247797
+WARNING 2026-06-02 22:16:02,648 basehttp "GET /static/css/dalal.css HTTP/1.1" 404 1899
+WARNING 2026-06-02 22:16:02,655 basehttp "GET /static/js/dalal.js HTTP/1.1" 404 1893
+WARNING 2026-06-02 22:16:02,956 basehttp "GET /static/img/placeholder-property.svg HTTP/1.1" 404 1944
+WARNING 2026-06-02 23:16:49,870 log "GET /static/css/dalal.css HTTP/1.1" 404 1966
+WARNING 2026-06-02 23:16:49,896 log "GET /static/js/dalal.js HTTP/1.1" 404 1960
+WARNING 2026-06-02 23:16:50,383 log "GET /static/img/placeholder-property.svg HTTP/1.1" 404 2011
+WARNING 2026-06-02 23:16:50,536 log Not Found: /favicon.ico
+WARNING 2026-06-02 23:16:50,539 log "GET /favicon.ico HTTP/1.1" 404 7216
+WARNING 2026-06-02 23:35:37,494 log "GET /static/css/dalal.css HTTP/1.1" 404 1966
+WARNING 2026-06-02 23:35:37,524 log "GET /static/js/dalal.js HTTP/1.1" 404 1960
+WARNING 2026-06-02 23:35:37,802 log "GET /static/img/placeholder-property.svg HTTP/1.1" 404 2011
+WARNING 2026-06-02 23:37:46,514 basehttp "GET /static/css/dalal.css HTTP/1.1" 404 1899
+WARNING 2026-06-02 23:37:46,521 basehttp "GET /static/js/dalal.js HTTP/1.1" 404 1893
+WARNING 2026-06-02 23:37:47,172 basehttp "GET /static/img/placeholder-property.svg HTTP/1.1" 404 1944
+WARNING 2026-06-02 23:37:47,533 log Not Found: /favicon.ico
+WARNING 2026-06-02 23:37:47,535 basehttp "GET /favicon.ico HTTP/1.1" 404 5613
+WARNING 2026-06-02 23:40:11,923 basehttp "GET /static/css/dalal.css HTTP/1.1" 404 1899
+WARNING 2026-06-02 23:40:11,924 basehttp "GET /static/js/dalal.js HTTP/1.1" 404 1893
+WARNING 2026-06-02 23:40:12,232 basehttp "GET /static/img/placeholder-property.svg HTTP/1.1" 404 1944
+WARNING 2026-06-02 23:42:49,200 basehttp "GET /static/img/placeholder-property.svg HTTP/1.1" 404 1944
+WARNING 2026-06-02 23:52:51,545 basehttp "GET /static/img/placeholder-property.svg HTTP/1.1" 404 1944
+WARNING 2026-06-03 02:15:03,399 basehttp "GET /static/img/placeholder-property.svg HTTP/1.1" 404 1944
+WARNING 2026-06-03 02:15:03,417 log Not Found: /favicon.ico
+WARNING 2026-06-03 02:15:03,418 basehttp "GET /favicon.ico HTTP/1.1" 404 5613
+WARNING 2026-06-03 13:21:16,891 log Not Found: /favicon.ico
+WARNING 2026-06-03 13:21:16,894 basehttp "GET /favicon.ico HTTP/1.1" 404 5613
+WARNING 2026-06-03 13:21:25,786 basehttp "GET /static/img/placeholder-property.svg HTTP/1.1" 404 1944
+WARNING 2026-06-04 14:41:10,401 log Not Found: /favicon.ico
+WARNING 2026-06-04 14:41:10,405 log "GET /favicon.ico HTTP/1.1" 404 7216
