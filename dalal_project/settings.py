@@ -26,30 +26,18 @@ ALLOWED_HOSTS = [
     h.strip() for h in os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',') if h.strip()
 ]
 
-# Get CSRF_TRUSTED_ORIGINS from environment with robust validation
-csrf_env_value = os.getenv('CSRF_TRUSTED_ORIGINS')
-if csrf_env_value:
-    # Check if any value in the comma-separated list is invalid (doesn't start with http:// or https://)
-    invalid_values = [v.strip() for v in csrf_env_value.split(',') if v.strip() and not (v.strip().startswith('http://') or v.strip().startswith('https://'))]
-    if invalid_values:
-        # Remove the environment variable entirely if it contains invalid values
-        os.environ.pop('CSRF_TRUSTED_ORIGINS', None)
-        csrf_env_value = None
-
-# Use environment value if valid, otherwise use defaults
-if csrf_env_value and csrf_env_value.strip():
-    csrf_env = csrf_env_value
-else:
-    csrf_env = 'http://localhost:8000,http://127.0.0.1:8000'
-
-# Filter out invalid origins that don't start with http:// or https://
-CSRF_TRUSTED_ORIGINS = [
-    o.strip() for o in csrf_env.split(',') 
-    if o.strip() and (o.strip().startswith('http://') or o.strip().startswith('https://'))
-]
-# If no valid origins found, use defaults
-if not CSRF_TRUSTED_ORIGINS:
+# Construct CSRF_TRUSTED_ORIGINS dynamically from ALLOWED_HOSTS
+# This avoids issues with invalid Railway environment variables
+CSRF_TRUSTED_ORIGINS = []
+if DEBUG:
     CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://127.0.0.1:8000']
+else:
+    # In production, construct from ALLOWED_HOSTS with proper schemes
+    for host in ALLOWED_HOSTS:
+        if host and host != '*':
+            # Add both http and https versions
+            CSRF_TRUSTED_ORIGINS.append(f'https://{host}')
+            CSRF_TRUSTED_ORIGINS.append(f'http://{host}')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
