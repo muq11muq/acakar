@@ -9,6 +9,11 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
+# Remove CSRF_TRUSTED_ORIGINS from environment if it exists to prevent Django system check errors
+# Railway may set this to an invalid value that causes Django 4.0+ to fail
+if 'CSRF_TRUSTED_ORIGINS' in os.environ:
+    del os.environ['CSRF_TRUSTED_ORIGINS']
+
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
