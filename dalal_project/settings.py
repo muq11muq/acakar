@@ -26,6 +26,15 @@ ALLOWED_HOSTS = [
     h.strip() for h in os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',') if h.strip()
 ]
 
+# Remove invalid CSRF_TRUSTED_ORIGINS from environment if it exists and is invalid
+csrf_env_value = os.getenv('CSRF_TRUSTED_ORIGINS')
+if csrf_env_value:
+    # Check if any value in the comma-separated list is invalid (doesn't start with http:// or https://)
+    invalid_values = [v.strip() for v in csrf_env_value.split(',') if v.strip() and not (v.strip().startswith('http://') or v.strip().startswith('https://'))]
+    if invalid_values:
+        # Remove the environment variable entirely if it contains invalid values
+        os.environ.pop('CSRF_TRUSTED_ORIGINS', None)
+
 csrf_env = os.getenv('CSRF_TRUSTED_ORIGINS', 'http://localhost:8000,http://127.0.0.1:8000')
 # Filter out invalid origins that don't start with http:// or https://
 CSRF_TRUSTED_ORIGINS = [
