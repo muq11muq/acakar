@@ -1,5 +1,2 @@
 [tools]
 python = "3.10"
-
-[tools.python]
-github_attestations = false
