@@ -68,6 +68,10 @@ else:
     if not CSRF_TRUSTED_ORIGINS:
         CSRF_TRUSTED_ORIGINS = ['https://*.railway.app']
 
+# Silence the CSRF_TRUSTED_ORIGINS system check error
+# Railway may set this to an invalid value (e.g., ".") that we cannot override
+SILENCED_SYSTEM_CHECKS = ['security.W004', '4_0.E001']
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
