@@ -1,1 +1,1 @@
-web: python manage.py collectstatic --noinput && ls -la && ls -la staticfiles && unset CSRF_TRUSTED_ORIGINS && unset DATABASE_URL && python manage.py migrate --noinput && gunicorn dalal_project.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120
+web: python manage.py collectstatic --noinput --skip-checks && ls -la && ls -la staticfiles && unset CSRF_TRUSTED_ORIGINS && unset DATABASE_URL && python manage.py migrate --noinput --skip-checks && gunicorn dalal_project.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120
