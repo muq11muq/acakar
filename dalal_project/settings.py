@@ -12,11 +12,21 @@ import sys
 if 'CSRF_TRUSTED_ORIGINS' in os.environ:
     del os.environ['CSRF_TRUSTED_ORIGINS']
 
+# CRITICAL: Remove DATABASE_URL from environment IMMEDIATELY before any imports
+# Railway may set this to an invalid value that causes database connection errors
+# This must happen before any Django imports or load_dotenv()
+if 'DATABASE_URL' in os.environ:
+    del os.environ['DATABASE_URL']
+
 from pathlib import Path
 
 from dotenv import load_dotenv
 
 load_dotenv()
+
+# CRITICAL: Remove DATABASE_URL again after load_dotenv() in case .env file contains invalid value
+if 'DATABASE_URL' in os.environ:
+    del os.environ['DATABASE_URL']
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
