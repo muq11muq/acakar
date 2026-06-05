@@ -1,1 +1,1 @@
-web: python manage.py runserver 0.0.0.0:$PORT
+web: mkdir -p staticfiles && python manage.py collectstatic --noinput --clear && unset CSRF_TRUSTED_ORIGINS && unset DATABASE_URL && python manage.py migrate --noinput && gunicorn dalal_project.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120
