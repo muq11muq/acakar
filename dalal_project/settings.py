@@ -238,12 +238,13 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Ensure staticfiles directory exists
+# Ensure staticfiles directory exists BEFORE middleware loads
 STATIC_ROOT.mkdir(parents=True, exist_ok=True)
 
 if not DEBUG:
     STATICFILES_STORAGE = 'whitenoise.storage.ManifestStaticFilesStorage'
     WHITENOISE_MANIFEST_STRICT = False
+    WHITENOISE_IGNORE_IF_NOT_FOUND = True
 else:
     WHITENOISE_USE_FINDERS = True
 
