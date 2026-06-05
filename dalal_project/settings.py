@@ -133,8 +133,9 @@ WSGI_APPLICATION = 'dalal_project.wsgi.application'
 # --- Database: SQLite, PostgreSQL, or MySQL ---
 DB_ENGINE = os.getenv('DB_ENGINE', 'sqlite').lower()
 
-# If DATABASE_URL is provided, use it (takes precedence)
-if os.getenv('DATABASE_URL'):
+# If DATABASE_URL is provided AND DB_ENGINE is not explicitly set to sqlite, use it
+# This allows forcing SQLite via DB_ENGINE=sqlite even when DATABASE_URL is present
+if os.getenv('DATABASE_URL') and DB_ENGINE != 'sqlite':
     try:
         import dj_database_url
         DATABASES = {
