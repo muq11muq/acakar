@@ -9,6 +9,12 @@ import sys
 if 'CSRF_TRUSTED_ORIGINS' in os.environ:
     del os.environ['CSRF_TRUSTED_ORIGINS']
 
+# CRITICAL: Remove DATABASE_URL from environment immediately
+# Railway may set this to an invalid value that causes database connection errors
+# This must happen before Django settings are loaded
+if 'DATABASE_URL' in os.environ:
+    del os.environ['DATABASE_URL']
+
 
 def main():
     """Run administrative tasks."""
