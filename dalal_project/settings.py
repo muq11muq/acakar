@@ -24,6 +24,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# CRITICAL: Remove CSRF_TRUSTED_ORIGINS again after load_dotenv() in case Railway sets it after
+if 'CSRF_TRUSTED_ORIGINS' in os.environ:
+    del os.environ['CSRF_TRUSTED_ORIGINS']
+
 # CRITICAL: Remove DATABASE_URL again after load_dotenv() in case .env file contains invalid value
 if 'DATABASE_URL' in os.environ:
     del os.environ['DATABASE_URL']
