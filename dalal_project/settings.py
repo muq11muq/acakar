@@ -123,7 +123,30 @@ WSGI_APPLICATION = 'dalal_project.wsgi.application'
 # --- Database: SQLite, PostgreSQL, or MySQL ---
 DB_ENGINE = os.getenv('DB_ENGINE', 'sqlite').lower()
 
-if DB_ENGINE == 'mysql' or (os.getenv('DATABASE_URL') and 'mysql' in os.getenv('DATABASE_URL', '').lower()):
+# If DATABASE_URL is provided, use it (takes precedence)
+if os.getenv('DATABASE_URL'):
+    try:
+        import dj_database_url
+        DATABASES = {
+            'default': dj_database_url.config(
+                default=os.getenv('DATABASE_URL'),
+                conn_max_age=600,
+                conn_health_checks=True,
+            )
+        }
+    except ImportError:
+        # Manual parsing if dj_database_url not available
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql',
+                'NAME': os.getenv('DB_NAME') or os.getenv('MYSQL_DATABASE', 'railway'),
+                'USER': os.getenv('DB_USER') or os.getenv('MYSQLUSER', 'root'),
+                'PASSWORD': os.getenv('DB_PASSWORD') or os.getenv('MYSQLPASSWORD', ''),
+                'HOST': os.getenv('DB_HOST') or os.getenv('MYSQLHOST', 'localhost'),
+                'PORT': os.getenv('DB_PORT') or os.getenv('MYSQLPORT', '5432'),
+            }
+        }
+elif DB_ENGINE == 'mysql' or (os.getenv('DATABASE_URL') and 'mysql' in os.getenv('DATABASE_URL', '').lower()):
     if os.getenv('DATABASE_URL'):
         try:
             import dj_database_url
