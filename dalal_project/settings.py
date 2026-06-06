@@ -15,8 +15,7 @@ if 'CSRF_TRUSTED_ORIGINS' in os.environ:
 # CRITICAL: Remove DATABASE_URL from environment IMMEDIATELY before any imports
 # Railway may set this to an invalid value that causes database connection errors
 # This must happen before any Django imports or load_dotenv()
-if 'DATABASE_URL' in os.environ:
-    del os.environ['DATABASE_URL']
+
 
 from pathlib import Path
 
@@ -24,13 +23,16 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# CRITICAL: Ensure CSRF_TRUSTED_ORIGINS is explicitly cleared after environment loading
+# This helps prevent issues where environment variables might override settings
+CSRF_TRUSTED_ORIGINS = []
+
 # CRITICAL: Remove CSRF_TRUSTED_ORIGINS again after load_dotenv() in case Railway sets it after
 if 'CSRF_TRUSTED_ORIGINS' in os.environ:
     del os.environ['CSRF_TRUSTED_ORIGINS']
 
 # CRITICAL: Remove DATABASE_URL again after load_dotenv() in case .env file contains invalid value
-if 'DATABASE_URL' in os.environ:
-    del os.environ['DATABASE_URL']
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -43,109 +45,49 @@ if not SECRET_KEY:
 
 DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
 
-ALLOWED_HOSTS = [
-    h.strip() for h in os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',') if h.strip()
-]
 
-# ... (الكود الموجود) ...
 
-ALLOWED_HOSTS = [
-    h.strip() for h in os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',') if h.strip()
-]
-
-# Explicitly add Railway public domain if not already present
+# ... (الكود الموجود) Explicitly add Railway public domain if not already present
 # هذا يضمن أن نطاق Railway (acakar-production.up.railway.app) يتم التعرف عليه
-if 'acakar-production.up.railway.app' not in ALLOWED_HOSTS and '*' not in ALLOWED_HOSTS:
-    ALLOWED_HOSTS.append('acakar-production.up.railway.app')
-
 # Construct CSRF_TRUSTED_ORIGINS dynamically from ALLOWED_HOSTS
 # This avoids issues with invalid Railway environment variables
 CSRF_TRUSTED_ORIGINS = []
 if DEBUG:
     CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://127.0.0.1:8000']
 else:
-    # In production, construct from ALLOWED_HOSTS with proper schemes
-    # If ALLOWED_HOSTS contains "*", we can't determine specific origins
-    # In that case, use the Railway app URL from environment or a sensible default
-    railway_domain = os.getenv('RAILWAY_PUBLIC_DOMAIN', '')
-    railway_url = os.getenv('RAILWAY_URL', '')
-    
-    if railway_domain:
-        CSRF_TRUSTED_ORIGINS.append(f'https://{railway_domain}')
-        CSRF_TRUSTED_ORIGINS.append(f'http://{railway_domain}')
-    elif railway_url:
-        # Extract domain from RAILWAY_URL if available
-        from urllib.parse import urlparse
-        parsed = urlparse(railway_url)
-        if parsed.netloc:
-            CSRF_TRUSTED_ORIGINS.append(f'https://{parsed.netloc}')
-            CSRF_TRUSTED_ORIGINS.append(f'http://{parsed.netloc}')
-    
-    # Also add any specific hosts from ALLOWED_HOSTS (excluding wildcard)
+    # Add any specific hosts from ALLOWED_HOSTS (excluding wildcard)
     for host in ALLOWED_HOSTS:
         if host and host != '*':
-            # Add both http and https versions
-            if not any(host in origin for origin in CSRF_TRUSTED_ORIGINS):
-                CSRF_TRUSTED_ORIGINS.append(f'https://{host}')
-                CSRF_TRUSTED_ORIGINS.append(f'http://{host}')
+            # Add both http and https versions if not already present
+            if not host.startswith(('http://', 'https://')):
+                if f'https://{host}' not in CSRF_TRUSTED_ORIGINS:
+                    CSRF_TRUSTED_ORIGINS.append(f'https://{host}')
+                if f'http://{host}' not in CSRF_TRUSTED_ORIGINS:
+                    CSRF_TRUSTED_ORIGINS.append(f'http://{host}')
+            elif host not in CSRF_TRUSTED_ORIGINS: # If it already has a scheme, add as is
+                CSRF_TRUSTED_ORIGINS.append(host)
     
-    # Explicitly add the Railway public domain to CSRF_TRUSTED_ORIGINS
-    # هذا يضمن أن نطاق Railway (acakar-production.up.railway.app) يتم التعرف عليه
-    if 'https://acakar-production.up.railway.app' not in CSRF_TRUSTED_ORIGINS:
-        CSRF_TRUSTED_ORIGINS.append('https://acakar-production.up.railway.app')
-    if 'http://acakar-production.up.railway.app' not in CSRF_TRUSTED_ORIGINS:
-        CSRF_TRUSTED_ORIGINS.append('http://acakar-production.up.railway.app')
-
+    # Add Railway public domain if available and not already present
+    railway_domain = os.getenv('RAILWAY_PUBLIC_DOMAIN', '')
+    if railway_domain:
+        https_railway = f'https://{railway_domain}'
+        http_railway = f'http://{railway_domain}'
+        if https_railway not in CSRF_TRUSTED_ORIGINS:
+            CSRF_TRUSTED_ORIGINS.append(https_railway)
+        if http_railway not in CSRF_TRUSTED_ORIGINS:
+            CSRF_TRUSTED_ORIGINS.append(http_railway)
+            
     # If still empty, use a safe default for Railway
     if not CSRF_TRUSTED_ORIGINS:
         CSRF_TRUSTED_ORIGINS = ['https://*.railway.app']
 
-# ... (بقية الكود) ...# Explicitly add Railway public domain if not already present
-# هذا يضمن أن نطاق Railway (acakar-production.up.railway.app) يتم التعرف عليه
-if 'acakar-production.up.railway.app' not in ALLOWED_HOSTS and '*' not in ALLOWED_HOSTS:
-    ALLOWED_HOSTS.append('acakar-production.up.railway.app')
+# Ensure all entries have a scheme and filter out empty or invalid ones
+CSRF_TRUSTED_ORIGINS = [
+    origin for origin in CSRF_TRUSTED_ORIGINS
+    if origin and origin != '.' and origin.startswith(('http://', 'https://'))
+]
 
-# Construct CSRF_TRUSTED_ORIGINS dynamically from ALLOWED_HOSTS
-# This avoids issues with invalid Railway environment variables
-CSRF_TRUSTED_ORIGINS = []
-if DEBUG:
-    CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://127.0.0.1:8000']
-else:
-    # In production, construct from ALLOWED_HOSTS with proper schemes
-    # If ALLOWED_HOSTS contains "*", we can't determine specific origins
-    # In that case, use the Railway app URL from environment or a sensible default
-    railway_domain = os.getenv('RAILWAY_PUBLIC_DOMAIN', '')
-    railway_url = os.getenv('RAILWAY_URL', '')
-    
-    if railway_domain:
-        CSRF_TRUSTED_ORIGINS.append(f'https://{railway_domain}')
-        CSRF_TRUSTED_ORIGINS.append(f'http://{railway_domain}')
-    elif railway_url:
-        # Extract domain from RAILWAY_URL if available
-        from urllib.parse import urlparse
-        parsed = urlparse(railway_url)
-        if parsed.netloc:
-            CSRF_TRUSTED_ORIGINS.append(f'https://{parsed.netloc}')
-            CSRF_TRUSTED_ORIGINS.append(f'http://{parsed.netloc}')
-    
-    # Also add any specific hosts from ALLOWED_HOSTS (excluding wildcard)
-    for host in ALLOWED_HOSTS:
-        if host and host != '*':
-            # Add both http and https versions
-            if not any(host in origin for origin in CSRF_TRUSTED_ORIGINS):
-                CSRF_TRUSTED_ORIGINS.append(f'https://{host}')
-                CSRF_TRUSTED_ORIGINS.append(f'http://{host}')
-    
-    # Explicitly add the Railway public domain to CSRF_TRUSTED_ORIGINS
-    # هذا يضمن أن نطاق Railway (acakar-production.up.railway.app) يتم التعرف عليه
-    if 'https://acakar-production.up.railway.app' not in CSRF_TRUSTED_ORIGINS:
-        CSRF_TRUSTED_ORIGINS.append('https://acakar-production.up.railway.app')
-    if 'http://acakar-production.up.railway.app' not in CSRF_TRUSTED_ORIGINS:
-        CSRF_TRUSTED_ORIGINS.append('http://acakar-production.up.railway.app')
 
-    # If still empty, use a safe default for Railway
-    if not CSRF_TRUSTED_ORIGINS:
-        CSRF_TRUSTED_ORIGINS = ['https://*.railway.app']
 
 # Silence the CSRF_TRUSTED_ORIGINS system check error
 # Railway may set this to an invalid value (e.g., ".") that we cannot override
