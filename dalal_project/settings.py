@@ -56,10 +56,12 @@ else:
     if env_origins:
         for origin in env_origins.split(","):
             origin = origin.strip()
-            if origin.startswith(("http://", "https://")):
+            if origin and origin.startswith(("http://", "https://")):
                 CSRF_TRUSTED_ORIGINS.append(origin)
 
 CSRF_TRUSTED_ORIGINS = list(set(CSRF_TRUSTED_ORIGINS))
+# Final filter to ensure all values have proper scheme (Django 4.0+ requirement)
+CSRF_TRUSTED_ORIGINS = [origin for origin in CSRF_TRUSTED_ORIGINS if origin.startswith(("http://", "https://"))]
 
 
 
