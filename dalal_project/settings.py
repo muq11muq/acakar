@@ -34,6 +34,10 @@ ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
 if not ALLOWED_HOSTS or ALLOWED_HOSTS == ['']:
     ALLOWED_HOSTS = ['*'] if DEBUG else []
 
+# Add Railway healthcheck hostname
+if 'healthcheck.railway.app' not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append('healthcheck.railway.app')
+
 # Silence CSRF-related system checks for Railway compatibility
 SILENCED_SYSTEM_CHECKS = ['security.W004', 'csrf.E001', '4_0.E001']
 
@@ -227,7 +231,9 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
 
 if not DEBUG:
-    SECURE_SSL_REDIRECT = os.getenv('SECURE_SSL_REDIRECT', 'True').lower() == 'true'
+    # Disable SECURE_SSL_REDIRECT on Railway - Railway handles SSL at the edge
+    # and sends internal HTTP healthchecks that would be redirected to HTTPS
+    SECURE_SSL_REDIRECT = os.getenv('SECURE_SSL_REDIRECT', 'False').lower() == 'true'
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = False
     SECURE_HSTS_SECONDS = 31536000
