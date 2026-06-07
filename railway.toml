@@ -20,7 +20,7 @@ SECRET_KEY = ""
 ALLOWED_HOSTS = "acakar-production.up.railway.app"
 
 # Database Configuration
-DB_ENGINE = "mysql"
+DB_ENGINE = "sqlite"
 
 # Railway Domain Settings
 RAILWAY_PUBLIC_DOMAIN = "acakar-production.up.railway.app"
