@@ -14,8 +14,11 @@ SILENCED_SYSTEM_CHECKS = ['security.W004', '4_0.E001']
 # CRITICAL: Remove CSRF_TRUSTED_ORIGINS from environment IMMEDIATELY before any imports
 # Railway may set this to an invalid value (e.g., ".") that causes Django 4.0+ system check to fail
 # This must happen before any Django imports or load_dotenv()
-if 'CSRF_TRUSTED_ORIGINS' in os.environ:
-    del os.environ['CSRF_TRUSTED_ORIGINS']
+os.environ.pop('CSRF_TRUSTED_ORIGINS', None)
+
+# CRITICAL: Set CSRF_TRUSTED_ORIGINS to a safe default immediately to prevent Railway from overriding it
+# This must be set before any Django imports or system checks
+CSRF_TRUSTED_ORIGINS = ['https://*.railway.app', 'http://*.railway.app']
 
 # CRITICAL: Remove DATABASE_URL from environment IMMEDIATELY before any imports
 # Railway may set this to an invalid value that causes database connection errors
