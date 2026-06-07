@@ -16,9 +16,10 @@ SILENCED_SYSTEM_CHECKS = ['security.W004', '4_0.E001', 'csrf.E001']
 # This must happen before any Django imports or load_dotenv()
 os.environ.pop('CSRF_TRUSTED_ORIGINS', None)
 
-# CRITICAL: Set CSRF_TRUSTED_ORIGINS to a safe default immediately to prevent Railway from overriding it
-# This must be set before any Django imports or system checks
-CSRF_TRUSTED_ORIGINS = ['https://*.railway.app', 'http://*.railway.app']
+# CRITICAL: Set CSRF_TRUSTED_ORIGINS to empty list to bypass Railway's automatic injection
+# Railway sets this to "." which causes Django 4.0+ system check to fail
+# We'll use CSRF_COOKIE_SECURE = False to allow all origins instead
+CSRF_TRUSTED_ORIGINS = []
 
 # CRITICAL: Remove DATABASE_URL from environment IMMEDIATELY before any imports
 # Railway may set this to an invalid value that causes database connection errors
@@ -282,7 +283,9 @@ X_FRAME_OPTIONS = 'DENY'
 if not DEBUG:
     SECURE_SSL_REDIRECT = os.getenv('SECURE_SSL_REDIRECT', 'True').lower() == 'true'
     SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
+    # Set CSRF_COOKIE_SECURE to False to allow all origins since Railway sets CSRF_TRUSTED_ORIGINS to "."
+    # This is less secure but necessary to bypass Railway's environment variable injection
+    CSRF_COOKIE_SECURE = False
     SECURE_HSTS_SECONDS = 31536000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True

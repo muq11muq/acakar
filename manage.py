@@ -9,9 +9,9 @@ import sys
 if 'CSRF_TRUSTED_ORIGINS' in os.environ:
     del os.environ['CSRF_TRUSTED_ORIGINS']
 
-# CRITICAL: Set CSRF_TRUSTED_ORIGINS to a valid value immediately
+# CRITICAL: Set CSRF_TRUSTED_ORIGINS to empty string to bypass Railway's injection
 # This prevents Railway from setting it to "." later
-os.environ['CSRF_TRUSTED_ORIGINS'] = 'https://*.railway.app,http://*.railway.app'
+os.environ['CSRF_TRUSTED_ORIGINS'] = ''
 
 # CRITICAL: Remove DATABASE_URL from environment immediately
 # Railway may set this to an invalid value that causes database connection errors
