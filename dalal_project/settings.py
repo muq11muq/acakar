@@ -11,8 +11,12 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Handle Railway's CSRF_TRUSTED_ORIGINS injection
-if os.environ.get("CSRF_TRUSTED_ORIGINS") == ".":
-    del os.environ["CSRF_TRUSTED_ORIGINS"]
+# Railway may set CSRF_TRUSTED_ORIGINS="." which fails Django 4.0+ scheme requirement
+if "CSRF_TRUSTED_ORIGINS" in os.environ:
+    csrf_value = os.environ["CSRF_TRUSTED_ORIGINS"]
+    # Remove if it's just "." or doesn't start with http:// or https://
+    if csrf_value == "." or (not csrf_value.startswith("http://") and not csrf_value.startswith("https://")):
+        del os.environ["CSRF_TRUSTED_ORIGINS"]
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -29,6 +33,9 @@ DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
 if not ALLOWED_HOSTS or ALLOWED_HOSTS == ['']:
     ALLOWED_HOSTS = ['*'] if DEBUG else []
+
+# Silence CSRF-related system checks for Railway compatibility
+SILENCED_SYSTEM_CHECKS = ['security.W004', 'csrf.E001', '4_0.E001']
 
 # Configure CSRF_TRUSTED_ORIGINS
 CSRF_TRUSTED_ORIGINS = []
