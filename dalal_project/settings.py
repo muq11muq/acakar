@@ -16,6 +16,10 @@ SILENCED_SYSTEM_CHECKS = ['security.W004', 'csrf.E001', '4_0.E001']
 # Railway may set this to an invalid value that causes database connection errors
 # This must happen before any Django imports or load_dotenv()
 
+# CRITICAL: Remove invalid CSRF_TRUSTED_ORIGINS set by Railway
+# Railway sets CSRF_TRUSTED_ORIGINS="." which fails Django 4.0+ scheme requirement
+if os.environ.get("CSRF_TRUSTED_ORIGINS") == ".":
+    del os.environ["CSRF_TRUSTED_ORIGINS"]
 
 from pathlib import Path
 
