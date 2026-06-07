@@ -3,8 +3,8 @@ buildCommand = "python manage.py collectstatic --noinput"
 
 [deploy]
 startCommand = "python manage.py migrate --noinput --skip-checks && PYTHONPATH=. gunicorn dalal_project.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120"
-healthcheckPath = "/health/"
-healthcheckTimeout = 300
+healthcheckPath = "/"
+healthcheckTimeout = 600
 
 [env]
 DEBUG = "False"
