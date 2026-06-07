@@ -9,7 +9,7 @@ import sys
 # CRITICAL: Silence CSRF_TRUSTED_ORIGINS system check error IMMEDIATELY
 # Railway may set this to an invalid value (e.g., ".") that causes Django 4.0+ system check to fail
 # This must be set before any Django imports or system checks
-SILENCED_SYSTEM_CHECKS = ['security.W004', '4_0.E001']
+SILENCED_SYSTEM_CHECKS = ['security.W004', '4_0.E001', 'csrf.E001']
 
 # CRITICAL: Remove CSRF_TRUSTED_ORIGINS from environment IMMEDIATELY before any imports
 # Railway may set this to an invalid value (e.g., ".") that causes Django 4.0+ system check to fail

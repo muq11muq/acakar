@@ -5,5 +5,5 @@ export MISE_PYTHON_GITHUB_ATTESTATIONS=false
 mise install
 pip install -r requirements.txt
 mkdir -p staticfiles
-python manage.py collectstatic --skip-system-checks --noinput --clear
-python manage.py migrate --skip-system-checks --noinput
+python manage.py collectstatic --skip-checks --noinput --clear
+python manage.py migrate --skip-checks --noinput
