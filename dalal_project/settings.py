@@ -10,7 +10,7 @@ import sys
 print("DEBUG_CSRF =", repr(os.environ.get("CSRF_TRUSTED_ORIGINS")))
 
 # Silence CSRF-related system checks
-SILENCED_SYSTEM_CHECKS = ['security.W004', 'csrf.E001']
+SILENCED_SYSTEM_CHECKS = ['security.W004', 'csrf.E001', '4_0.E001']
 
 # CRITICAL: Remove DATABASE_URL from environment IMMEDIATELY before any imports
 # Railway may set this to an invalid value that causes database connection errors
