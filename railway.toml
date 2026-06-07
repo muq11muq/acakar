@@ -8,7 +8,7 @@ buildCommand = "python manage.py collectstatic --noinput"
 
 [deploy]
 # Command to run migrations and start the application
-startCommand = "python manage.py migrate --noinput --skip-checks && PYTHONPATH=. gunicorn dalal_project.wsgi:application --bind 0.0.0.0:$PORT --workers 1 --timeout 120 --access-logfile - --error-logfile -"
+startCommand = "python manage.py migrate --noinput --skip-checks && python manage.py runserver 0.0.0.0:$PORT"
 # Health check configuration
 healthcheckPath = "/health/"
 healthcheckTimeout = 600
