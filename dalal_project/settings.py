@@ -6,20 +6,8 @@ Supports SQLite (dev) and PostgreSQL (production) via environment variables.
 import os
 import sys
 
-# CRITICAL: Silence CSRF_TRUSTED_ORIGINS system check error IMMEDIATELY
-# Railway may set this to an invalid value (e.g., ".") that causes Django 4.0+ system check to fail
-# This must be set before any Django imports or system checks
-SILENCED_SYSTEM_CHECKS = ['security.W004', '4_0.E001', 'csrf.E001']
-
-# CRITICAL: Remove CSRF_TRUSTED_ORIGINS from environment IMMEDIATELY before any imports
-# Railway may set this to an invalid value (e.g., ".") that causes Django 4.0+ system check to fail
-# This must happen before any Django imports or load_dotenv()
-os.environ.pop('CSRF_TRUSTED_ORIGINS', None)
-
-# CRITICAL: Set CSRF_TRUSTED_ORIGINS to empty list to bypass Railway's automatic injection
-# Railway sets this to "." which causes Django 4.0+ system check to fail
-# We'll use CSRF_COOKIE_SECURE = False to allow all origins instead
-CSRF_TRUSTED_ORIGINS = []
+# Silence CSRF-related system checks
+SILENCED_SYSTEM_CHECKS = ['security.W004', 'csrf.E001']
 
 # CRITICAL: Remove DATABASE_URL from environment IMMEDIATELY before any imports
 # Railway may set this to an invalid value that causes database connection errors
@@ -31,18 +19,6 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 load_dotenv()
-
-# CRITICAL: Remove CSRF_TRUSTED_ORIGINS again after load_dotenv() in case Railway sets it after
-if 'CSRF_TRUSTED_ORIGINS' in os.environ:
-    del os.environ['CSRF_TRUSTED_ORIGINS']
-
-# CRITICAL: Override any Railway-set CSRF_TRUSTED_ORIGINS that might have been set via os.environ
-# Railway may set this to "." which causes Django 4.0+ system check to fail
-# We explicitly set it to a safe default here to override any environment variable
-if os.getenv('CSRF_TRUSTED_ORIGINS') == '.':
-    os.environ['CSRF_TRUSTED_ORIGINS'] = ''
-
-# CRITICAL: Remove DATABASE_URL again after load_dotenv() in case .env file contains invalid value
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -60,46 +36,27 @@ ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
 if not ALLOWED_HOSTS or ALLOWED_HOSTS == ['']:
     ALLOWED_HOSTS = ['*'] if DEBUG else []
 
-# ... (الكود الموجود) Explicitly add Railway public domain if not already present
-# هذا يضمن أن نطاق Railway (acakar-production.up.railway.app) يتم التعرف عليه
-# Construct CSRF_TRUSTED_ORIGINS dynamically from ALLOWED_HOSTS
-# This avoids issues with invalid Railway environment variables
-# NOTE: CSRF_TRUSTED_ORIGINS is already set to a safe default at the top of the file
-# We only modify it here if DEBUG is True, otherwise we keep the safe default
-if DEBUG:
-    CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://127.0.0.1:8000']
-else:
-    # Add any specific hosts from ALLOWED_HOSTS (excluding wildcard)
-    for host in ALLOWED_HOSTS:
-        if host and host != '*':
-            # Add both http and https versions if not already present
-            if not host.startswith(('http://', 'https://')):
-                if f'https://{host}' not in CSRF_TRUSTED_ORIGINS:
-                    CSRF_TRUSTED_ORIGINS.append(f'https://{host}')
-                if f'http://{host}' not in CSRF_TRUSTED_ORIGINS:
-                    CSRF_TRUSTED_ORIGINS.append(f'http://{host}')
-            elif host not in CSRF_TRUSTED_ORIGINS: # If it already has a scheme, add as is
-                CSRF_TRUSTED_ORIGINS.append(host)
-    
-    # Add Railway public domain if available and not already present
-    railway_domain = os.getenv('RAILWAY_PUBLIC_DOMAIN', '')
-    if railway_domain:
-        https_railway = f'https://{railway_domain}'
-        http_railway = f'http://{railway_domain}'
-        if https_railway not in CSRF_TRUSTED_ORIGINS:
-            CSRF_TRUSTED_ORIGINS.append(https_railway)
-        if http_railway not in CSRF_TRUSTED_ORIGINS:
-            CSRF_TRUSTED_ORIGINS.append(http_railway)
-            
-    # If still empty, use a safe default for Railway
-    if not CSRF_TRUSTED_ORIGINS:
-        CSRF_TRUSTED_ORIGINS = ['https://*.railway.app']
+# Configure CSRF_TRUSTED_ORIGINS
+CSRF_TRUSTED_ORIGINS = []
 
-# Ensure all entries have a scheme and filter out empty or invalid ones
-CSRF_TRUSTED_ORIGINS = [
-    origin for origin in CSRF_TRUSTED_ORIGINS
-    if origin and origin != '.' and origin.startswith(('http://', 'https://'))
-]
+if DEBUG:
+    CSRF_TRUSTED_ORIGINS = [
+        "http://localhost:8000",
+        "http://127.0.0.1:8000",
+    ]
+else:
+    railway_domain = os.getenv("RAILWAY_PUBLIC_DOMAIN")
+    if railway_domain:
+        CSRF_TRUSTED_ORIGINS.append(f"https://{railway_domain}")
+    
+    env_origins = os.getenv("CSRF_TRUSTED_ORIGINS", "").strip()
+    if env_origins:
+        for origin in env_origins.split(","):
+            origin = origin.strip()
+            if origin.startswith(("http://", "https://")):
+                CSRF_TRUSTED_ORIGINS.append(origin)
+
+CSRF_TRUSTED_ORIGINS = list(set(CSRF_TRUSTED_ORIGINS))
 
 
 
