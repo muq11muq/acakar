@@ -10,11 +10,12 @@ https://docs.djangoproject.com/en/6.0/howto/deployment/wsgi/
 import os
 import sys
 
-# CRITICAL: Remove CSRF_TRUSTED_ORIGINS from environment immediately
-# Railway may set this to an invalid value (e.g., ".") that causes Django 4.0+ to fail
-# This must happen before Django settings are loaded
+# CRITICAL: Remove Railway's invalid CSRF_TRUSTED_ORIGINS and set valid value
+# Railway sets CSRF_TRUSTED_ORIGINS="." which fails Django 4.0+ scheme requirement
 if 'CSRF_TRUSTED_ORIGINS' in os.environ:
     del os.environ['CSRF_TRUSTED_ORIGINS']
+# Set to valid value to prevent Railway from overriding with "."
+os.environ['CSRF_TRUSTED_ORIGINS'] = 'https://acakar-production.up.railway.app'
 
 from django.core.wsgi import get_wsgi_application
 
