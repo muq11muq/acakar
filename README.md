@@ -81,7 +81,61 @@ python manage.py runserver
 http://localhost:8000
 ```
 
-## 🔐 بيانات الدخول
+## � التشغيل باستخدام Docker
+
+### المتطلبات:
+- Docker Desktop
+- Docker Compose
+
+### خطوات التشغيل:
+
+1. **بناء الصورة وتشغيل الحاويات:**
+```bash
+docker-compose up --build
+```
+
+2. **تشغيل في الخلفية:**
+```bash
+docker-compose up -d --build
+```
+
+3. **إعداد قاعدة البيانات (أول مرة):**
+```bash
+docker-compose exec web python manage.py migrate
+```
+
+4. **إنشاء مستخدم مسؤول:**
+```bash
+docker-compose exec web python manage.py createsuperuser
+```
+
+5. **عرض السجلات:**
+```bash
+docker-compose logs -f web
+```
+
+6. **إيقاف الحاويات:**
+```bash
+docker-compose down
+```
+
+7. **إيقاف الحاويات وحذف البيانات:**
+```bash
+docker-compose down -v
+```
+
+### فتح المتصفح:
+```
+http://localhost:8000
+```
+
+### ملاحظات:
+- المشروع يستخدم MySQL افتراضياً في Docker
+- قاعدة بيانات MySQL تعمل في حاوية منفصلة
+- الملفات الثابتة والوسائط محفوظة في Docker volumes
+- بيانات MySQL محفوظة في volume لعدم ضياعها عند إيقاف الحاويات
+
+## �� بيانات الدخول
 
 - **لوحة التحكم**: `/admin/`
 - **اسم المستخدم الافتراضي**: admin
@@ -123,10 +177,11 @@ DB_PORT=3306
    - اختر "Deploy from GitHub repo"
    - حدد مستودع `acakar`
 
-2. **إعدادات البناء التلقائية:**
-   - سيقوم Railway تلقائياً بكشف مشروع Django
-   - سيستخدم ملف `railway.toml` للتكوين
-   - سيتم بناء المشروع تلقائياً
+2. **إضافة قاعدة بيانات MySQL:**
+   - في مشروع Railway، اضغط على "New Service"
+   - اختر "Database" ثم "MySQL"
+   - سيتم إنشاء قاعدة بيانات MySQL تلقائياً
+   - Railway سيقوم بإضافة `DATABASE_URL` تلقائياً
 
 3. **إضافة متغيرات البيئة في Railway:**
    - اذهب إلى إعدادات المشروع في Railway
@@ -137,18 +192,25 @@ DB_PORT=3306
      ALLOWED_HOSTS=*
      CSRF_TRUSTED_ORIGINS=https://*
      DB_ENGINE=mysql
+     RAILWAY_PUBLIC_DOMAIN=your-app.railway.app
      ```
-   - Railway سيقوم تلقائياً بإضافة `DATABASE_URL` عند إنشاء قاعدة بيانات MySQL
 
-4. **النشر التلقائي:**
+4. **إعدادات البناء التلقائية:**
+   - سيقوم Railway تلقائياً بكشف مشروع Django
+   - سيستخدم ملف `railway.toml` للتكوين
+   - سيتم بناء المشروع تلقائياً
+
+5. **النشر التلقائي:**
    - سيقوم Railway ببناء ونشر المشروع تلقائياً عند كل دفع إلى GitHub
    - يمكنك مراقبة حالة النشر في لوحة تحكم Railway
 
 ### ملفات النشر المهمة:
 - `railway.toml` - تكوين Railway الرئيسي
 - `Procfile` - أمر بدء التشغيل
+- `Dockerfile` - تكوين Docker للنشر
 - `requirements.txt` - المكتبات المطلوبة
 - `runtime.txt` - إصدار Python (3.10)
+- `.env.example` - مثال على متغيرات البيئة
 
 ## 📊 أنواع العقارات
 
