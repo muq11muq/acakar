@@ -36,6 +36,12 @@ CSRF_TRUSTED_ORIGINS = []
 if 'CSRF_TRUSTED_ORIGINS' in os.environ:
     del os.environ['CSRF_TRUSTED_ORIGINS']
 
+# CRITICAL: Override any Railway-set CSRF_TRUSTED_ORIGINS that might have been set via os.environ
+# Railway may set this to "." which causes Django 4.0+ system check to fail
+# We explicitly set it to a safe default here to override any environment variable
+if os.getenv('CSRF_TRUSTED_ORIGINS') == '.':
+    os.environ['CSRF_TRUSTED_ORIGINS'] = ''
+
 # CRITICAL: Remove DATABASE_URL again after load_dotenv() in case .env file contains invalid value
 
 
