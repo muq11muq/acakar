@@ -31,10 +31,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# CRITICAL: Ensure CSRF_TRUSTED_ORIGINS is explicitly cleared after environment loading
-# This helps prevent issues where environment variables might override settings
-CSRF_TRUSTED_ORIGINS = []
-
 # CRITICAL: Remove CSRF_TRUSTED_ORIGINS again after load_dotenv() in case Railway sets it after
 if 'CSRF_TRUSTED_ORIGINS' in os.environ:
     del os.environ['CSRF_TRUSTED_ORIGINS']
