@@ -42,4 +42,4 @@ dalal_project.backup/
 # Logs
 logs/
 
-# Force Railway cache clear
+# Force Railway cache clear - trigger redeploy
