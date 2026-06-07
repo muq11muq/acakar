@@ -6,6 +6,11 @@ Supports SQLite (dev) and PostgreSQL (production) via environment variables.
 import os
 import sys
 
+# CRITICAL: Silence CSRF_TRUSTED_ORIGINS system check error IMMEDIATELY
+# Railway may set this to an invalid value (e.g., ".") that causes Django 4.0+ system check to fail
+# This must be set before any Django imports or system checks
+SILENCED_SYSTEM_CHECKS = ['security.W004', '4_0.E001']
+
 # CRITICAL: Remove CSRF_TRUSTED_ORIGINS from environment IMMEDIATELY before any imports
 # Railway may set this to an invalid value (e.g., ".") that causes Django 4.0+ system check to fail
 # This must happen before any Django imports or load_dotenv()
@@ -90,10 +95,6 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 
-
-# Silence the CSRF_TRUSTED_ORIGINS system check error
-# Railway may set this to an invalid value (e.g., ".") that we cannot override
-SILENCED_SYSTEM_CHECKS = ['security.W004', '4_0.E001']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
