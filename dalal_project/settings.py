@@ -6,6 +6,9 @@ Supports SQLite (dev) and PostgreSQL (production) via environment variables.
 import os
 import sys
 
+# DEBUG: Print CSRF_TRUSTED_ORIGINS from environment before any processing
+print("DEBUG_CSRF =", repr(os.environ.get("CSRF_TRUSTED_ORIGINS")))
+
 # Silence CSRF-related system checks
 SILENCED_SYSTEM_CHECKS = ['security.W004', 'csrf.E001']
 
