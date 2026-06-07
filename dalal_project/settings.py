@@ -16,16 +16,17 @@ SILENCED_SYSTEM_CHECKS = ['security.W004', 'csrf.E001', '4_0.E001']
 # Railway may set this to an invalid value that causes database connection errors
 # This must happen before any Django imports or load_dotenv()
 
-# CRITICAL: Remove invalid CSRF_TRUSTED_ORIGINS set by Railway
-# Railway sets CSRF_TRUSTED_ORIGINS="." which fails Django 4.0+ scheme requirement
-if os.environ.get("CSRF_TRUSTED_ORIGINS") == ".":
-    del os.environ["CSRF_TRUSTED_ORIGINS"]
-
 from pathlib import Path
 
 from dotenv import load_dotenv
 
 load_dotenv()
+
+# CRITICAL: Remove invalid CSRF_TRUSTED_ORIGINS set by Railway
+# Railway sets CSRF_TRUSTED_ORIGINS="." which fails Django 4.0+ scheme requirement
+# This must happen AFTER load_dotenv() to override any .env file or Railway injection
+if os.environ.get("CSRF_TRUSTED_ORIGINS") == ".":
+    del os.environ["CSRF_TRUSTED_ORIGINS"]
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -44,6 +45,8 @@ if not ALLOWED_HOSTS or ALLOWED_HOSTS == ['']:
     ALLOWED_HOSTS = ['*'] if DEBUG else []
 
 # Configure CSRF_TRUSTED_ORIGINS
+# CRITICAL: Completely ignore Railway's CSRF_TRUSTED_ORIGINS environment variable
+# Railway sets it to "." which fails Django 4.0+ scheme requirement
 CSRF_TRUSTED_ORIGINS = []
 
 if DEBUG:
@@ -56,16 +59,9 @@ else:
     if railway_domain:
         CSRF_TRUSTED_ORIGINS.append(f"https://{railway_domain}")
     
-    env_origins = os.getenv("CSRF_TRUSTED_ORIGINS", "").strip()
-    if env_origins:
-        for origin in env_origins.split(","):
-            origin = origin.strip()
-            if origin and origin.startswith(("http://", "https://")):
-                CSRF_TRUSTED_ORIGINS.append(origin)
+    # DO NOT read from CSRF_TRUSTED_ORIGINS environment variable - Railway sets it to "."
 
 CSRF_TRUSTED_ORIGINS = list(set(CSRF_TRUSTED_ORIGINS))
-# Final filter to ensure all values have proper scheme (Django 4.0+ requirement)
-CSRF_TRUSTED_ORIGINS = [origin for origin in CSRF_TRUSTED_ORIGINS if origin.startswith(("http://", "https://"))]
 
 
 
