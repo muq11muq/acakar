@@ -1,38 +1,16 @@
 """
 Django settings for dalal_project — production-ready configuration.
-Supports SQLite (dev) and PostgreSQL (production) via environment variables.
+Supports SQLite (dev) and PostgreSQL/MySQL (production) via environment variables.
 """
 
 import os
-import sys
-
-# CRITICAL: Remove Railway's invalid CSRF_TRUSTED_ORIGINS before Django reads it
-# Railway sets CSRF_TRUSTED_ORIGINS="." which fails Django 4.0+ scheme requirement
-if "CSRF_TRUSTED_ORIGINS" in os.environ:
-    os.environ.pop("CSRF_TRUSTED_ORIGINS", None)
-
-# CRITICAL: Set CSRF_TRUSTED_ORIGINS immediately to valid values
-CSRF_TRUSTED_ORIGINS = []
-
-# DEBUG: Print CSRF_TRUSTED_ORIGINS from environment before any processing
-print("DEBUG_CSRF =", repr(os.environ.get("CSRF_TRUSTED_ORIGINS")))
-
-# Silence CSRF-related system checks
-SILENCED_SYSTEM_CHECKS = ['security.W004', 'csrf.E001', '4_0.E001']
-
-# CRITICAL: Remove DATABASE_URL from environment IMMEDIATELY before any imports
-# Railway may set this to an invalid value that causes database connection errors
-# This must happen before any Django imports or load_dotenv()
-
 from pathlib import Path
 
 from dotenv import load_dotenv
 
 load_dotenv()
 
-# CRITICAL: Remove invalid CSRF_TRUSTED_ORIGINS set by Railway
-# Railway sets CSRF_TRUSTED_ORIGINS="." which fails Django 4.0+ scheme requirement
-# This must happen AFTER load_dotenv() to override any .env file or Railway injection
+# Handle Railway's CSRF_TRUSTED_ORIGINS injection
 if os.environ.get("CSRF_TRUSTED_ORIGINS") == ".":
     del os.environ["CSRF_TRUSTED_ORIGINS"]
 
@@ -53,8 +31,6 @@ if not ALLOWED_HOSTS or ALLOWED_HOSTS == ['']:
     ALLOWED_HOSTS = ['*'] if DEBUG else []
 
 # Configure CSRF_TRUSTED_ORIGINS
-# CRITICAL: Completely ignore Railway's CSRF_TRUSTED_ORIGINS environment variable
-# Railway sets it to "." which fails Django 4.0+ scheme requirement
 CSRF_TRUSTED_ORIGINS = []
 
 if DEBUG:
@@ -66,8 +42,6 @@ else:
     railway_domain = os.getenv("RAILWAY_PUBLIC_DOMAIN")
     if railway_domain:
         CSRF_TRUSTED_ORIGINS.append(f"https://{railway_domain}")
-    
-    # DO NOT read from CSRF_TRUSTED_ORIGINS environment variable - Railway sets it to "."
 
 CSRF_TRUSTED_ORIGINS = list(set(CSRF_TRUSTED_ORIGINS))
 
@@ -93,7 +67,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    # 'django.middleware.csrf.CsrfViewMiddleware',  # Temporarily disabled to bypass Railway CSRF_TRUSTED_ORIGINS injection
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -121,11 +95,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'dalal_project.wsgi.application'
 
-# --- Database: SQLite, PostgreSQL, or MySQL ---
+# Database Configuration
 DB_ENGINE = os.getenv('DB_ENGINE', 'sqlite').lower()
 
-# If DATABASE_URL is provided AND DB_ENGINE is not explicitly set to sqlite, use it
-# This allows forcing SQLite via DB_ENGINE=sqlite even when DATABASE_URL is present
 if os.getenv('DATABASE_URL') and DB_ENGINE != 'sqlite':
     try:
         import dj_database_url
@@ -137,7 +109,6 @@ if os.getenv('DATABASE_URL') and DB_ENGINE != 'sqlite':
             )
         }
     except ImportError:
-        # Manual parsing if dj_database_url not available
         DATABASES = {
             'default': {
                 'ENGINE': 'django.db.backends.postgresql',
@@ -161,7 +132,6 @@ elif DB_ENGINE == 'mysql' or (os.getenv('DATABASE_URL') and 'mysql' in os.getenv
                 )
             }
         except ImportError:
-            # Fallback to manual parsing if dj_database_url not available
             DATABASES = {
                 'default': {
                     'ENGINE': 'django.db.backends.mysql',
@@ -227,7 +197,6 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 if not DEBUG:
@@ -253,8 +222,6 @@ X_FRAME_OPTIONS = 'DENY'
 if not DEBUG:
     SECURE_SSL_REDIRECT = os.getenv('SECURE_SSL_REDIRECT', 'True').lower() == 'true'
     SESSION_COOKIE_SECURE = True
-    # Set CSRF_COOKIE_SECURE to False to allow all origins since Railway sets CSRF_TRUSTED_ORIGINS to "."
-    # This is less secure but necessary to bypass Railway's environment variable injection
     CSRF_COOKIE_SECURE = False
     SECURE_HSTS_SECONDS = 31536000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
@@ -265,7 +232,7 @@ CSRF_COOKIE_HTTPONLY = False
 SESSION_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_SAMESITE = 'Lax'
 
-# --- Cache (rate limiting + performance) ---
+# Cache Configuration
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
@@ -279,7 +246,7 @@ if os.getenv('REDIS_URL'):
         'LOCATION': os.getenv('REDIS_URL'),
     }
 
-# --- Logging ---
+# Logging Configuration
 LOG_DIR = BASE_DIR / 'logs'
 LOG_DIR.mkdir(exist_ok=True)
 
@@ -316,7 +283,7 @@ LOGGING = {
     },
 }
 
-# --- Messages ---
+# Messages Configuration
 from django.contrib.messages import constants as message_constants
 
 MESSAGE_TAGS = {
@@ -327,10 +294,10 @@ MESSAGE_TAGS = {
     message_constants.ERROR: 'error',
 }
 
-# Site
+# Site Configuration
 SITE_NAME = os.getenv('SITE_NAME', 'دلال')
 
-# CORS Settings
+# CORS Configuration
 CORS_ALLOW_ALL_ORIGINS = DEBUG  # Allow all in development, restrict in production
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
@@ -343,6 +310,6 @@ if not DEBUG:
     else:
         CORS_ALLOW_ALL_ORIGINS = False
 
-# Security Headers for API
+# Security Headers
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True

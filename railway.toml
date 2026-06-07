@@ -1,15 +1,27 @@
+# ============================================
+# Railway Configuration for Django Project
+# ============================================
+
 [build]
+# Command to build static files
 buildCommand = "python manage.py collectstatic --noinput"
 
 [deploy]
+# Command to run migrations and start the application
 startCommand = "python manage.py migrate --noinput --skip-checks && PYTHONPATH=. gunicorn dalal_project.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120"
+# Health check configuration
 healthcheckPath = "/"
 healthcheckTimeout = 600
 
 [env]
+# Django Settings
 DEBUG = "False"
-ALLOWED_HOSTS = "acakar-production.up.railway.app"
-DB_ENGINE = "mysql"
 SECRET_KEY = ""
-RAILWAY_PUBLIC_DOMAIN = "acakar-production.up.railway.app"
+ALLOWED_HOSTS = "acakar-production.up.railway.app"
 CSRF_TRUSTED_ORIGINS = "https://acakar-production.up.railway.app"
+
+# Database Configuration
+DB_ENGINE = "mysql"
+
+# Railway Domain Settings
+RAILWAY_PUBLIC_DOMAIN = "acakar-production.up.railway.app"
