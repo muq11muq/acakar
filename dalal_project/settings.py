@@ -6,6 +6,14 @@ Supports SQLite (dev) and PostgreSQL (production) via environment variables.
 import os
 import sys
 
+# CRITICAL: Remove Railway's invalid CSRF_TRUSTED_ORIGINS before Django reads it
+# Railway sets CSRF_TRUSTED_ORIGINS="." which fails Django 4.0+ scheme requirement
+if "CSRF_TRUSTED_ORIGINS" in os.environ:
+    os.environ.pop("CSRF_TRUSTED_ORIGINS", None)
+
+# CRITICAL: Set CSRF_TRUSTED_ORIGINS immediately to valid values
+CSRF_TRUSTED_ORIGINS = []
+
 # DEBUG: Print CSRF_TRUSTED_ORIGINS from environment before any processing
 print("DEBUG_CSRF =", repr(os.environ.get("CSRF_TRUSTED_ORIGINS")))
 
