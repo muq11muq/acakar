@@ -63,7 +63,8 @@ if not ALLOWED_HOSTS or ALLOWED_HOSTS == ['']:
 # هذا يضمن أن نطاق Railway (acakar-production.up.railway.app) يتم التعرف عليه
 # Construct CSRF_TRUSTED_ORIGINS dynamically from ALLOWED_HOSTS
 # This avoids issues with invalid Railway environment variables
-CSRF_TRUSTED_ORIGINS = []
+# NOTE: CSRF_TRUSTED_ORIGINS is already set to a safe default at the top of the file
+# We only modify it here if DEBUG is True, otherwise we keep the safe default
 if DEBUG:
     CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://127.0.0.1:8000']
 else:
