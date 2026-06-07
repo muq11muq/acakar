@@ -45,7 +45,9 @@ if not SECRET_KEY:
 
 DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
 
-
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
+if not ALLOWED_HOSTS or ALLOWED_HOSTS == ['']:
+    ALLOWED_HOSTS = ['*'] if DEBUG else []
 
 # ... (الكود الموجود) Explicitly add Railway public domain if not already present
 # هذا يضمن أن نطاق Railway (acakar-production.up.railway.app) يتم التعرف عليه
