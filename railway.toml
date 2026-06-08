@@ -8,7 +8,7 @@ buildCommand = "python manage.py collectstatic --noinput"
 
 [deploy]
 # Command to run migrations and start the application
-startCommand = "python manage.py migrate --noinput --skip-checks && python manage.py runserver 0.0.0.0:$PORT"
+startCommand = "sh -c 'python manage.py migrate --noinput --skip-checks && gunicorn dalal_project.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120'"
 # Health check configuration
 healthcheckPath = "/health/"
 healthcheckTimeout = 600
@@ -16,8 +16,8 @@ healthcheckTimeout = 600
 [env]
 # Django Settings
 DEBUG = "False"
-SECRET_KEY = ""
-ALLOWED_HOSTS = "acakar-production.up.railway.app"
+# SECRET_KEY should be set in Railway environment variables
+ALLOWED_HOSTS = "acakar-production.up.railway.app,healthcheck.railway.app"
 
 # Database Configuration
 DB_ENGINE = "sqlite"
